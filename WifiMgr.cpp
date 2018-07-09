@@ -1,34 +1,18 @@
-//#include <DNSServer.h>
+#include "WifiMgr.h"
 
-//DNSServer dnsServer;
+WifiMgr::WifiMgr(Settings &settings, WebServer& webServer)
+: settings(settings), webServer(webServer) {
 
-//const byte DNS_PORT = 53;
+}
 
-// bool apMode = false;
-
-// AP mode password
-const char WiFiAPPSK[] = "";
-
-// Wi-Fi network to connect to (if not in AP mode)
-char* ssid = "";
-char* password = "";
-
-#define HOSTNAME "ESP8266-" ///< Hostname. The initializeWiFi function adds the Chip ID at the end.
-
-#define DEBUG_WIFI 1
-
-unsigned long futureTimeout = 0;
-uint16_t connectionTimeout = 20000;
-
-template <typename Generic>
-void debugPrintln(Generic text) {
+template <typename Generic> void WifiMgr::debugPrintln(Generic text) {
   if (DEBUG_WIFI) {
     Serial.print("*WiFi: ");
     Serial.println(text);
   }
 }
 
-void startAp() {
+void WifiMgr::startAp() {
   // WiFi.disconnect();
 
   // apMode = true;
@@ -42,7 +26,7 @@ void startAp() {
   char AP_NameChar[AP_NameString.length() + 1];
   memset(AP_NameChar, 0, AP_NameString.length() + 1);
 
-  for (int i = 0; i < AP_NameString.length(); i++)
+  for (unsigned int i = 0; i < AP_NameString.length(); i++)
     AP_NameChar[i] = AP_NameString.charAt(i);
 
   debugPrintln("Starting soft AP");
@@ -64,7 +48,7 @@ void startAp() {
   //  dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
 }
 
-String getWiFiJson() {
+String WifiMgr::getWiFiJson() {
   String hostname = String(HOSTNAME);
   hostname += String(ESP.getChipId(), HEX);
 
@@ -93,7 +77,7 @@ String getWiFiJson() {
   return json;
 }
 
-void initializeWiFi() {
+void WifiMgr::initializeWiFi() {
   WiFi.mode(WIFI_AP_STA);
 
   // Set Hostname.
@@ -129,9 +113,9 @@ void initializeWiFi() {
 
   startAp();
 
-  webServer.on("/wifi", HTTP_POST, []() {
-    String ssid = webServer.arg("ssid");
-    String password = webServer.arg("password");
+  webServer.webServer.on("/wifi", HTTP_POST, [this]() {
+    String ssid = webServer.webServer.arg("ssid");
+    String password = webServer.webServer.arg("password");
     // String mode = webServer.arg("mode");
 
     char ssidChars[50];
@@ -151,17 +135,17 @@ void initializeWiFi() {
     WiFi.begin(ssidChars, passwordChars);
     // futureTimeout = millis() + connectionTimeout;
 
-    webServer.sendHeader("Location", "/wifi.htm");
-    webServer.send(303);
+    webServer.webServer.sendHeader("Location", "/wifi.htm");
+    webServer.webServer.send(303);
   });
 
-  webServer.on("/wifi", HTTP_GET, []() {
+  webServer.webServer.on("/wifi", HTTP_GET, [this]() {
     String json = getWiFiJson();
-    webServer.send(200, "application/json", json);
+    webServer.webServer.send(200, "application/json", json);
   });
 }
 
-void checkWiFi() {
+void WifiMgr::checkWiFi() {
   //  if (WiFi.status() == WL_CONNECTED) {
   //    debugPrintln("connected");
   //    futureTimeout = millis() + connectionTimeout;

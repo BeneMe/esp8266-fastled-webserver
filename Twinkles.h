@@ -1,5 +1,10 @@
 // based on ColorTwinkles by Mark Kriegsman: https://gist.github.com/kriegsman/5408ecd397744ba0393e
 
+#ifndef TWINKLES_H
+#define TWINKLES_H
+
+#include "Settings.h"
+
 #define STARTING_BRIGHTNESS 64
 #define FADE_IN_SPEED       32
 #define FADE_OUT_SPEED      20
@@ -56,12 +61,12 @@ void brightenOrDarkenEachPixel( fract8 fadeUpAmount, fract8 fadeDownAmount)
   for ( uint16_t i = 0; i < NUM_LEDS; i++) {
     if ( getPixelDirection(i) == GETTING_DARKER) {
       // This pixel is getting darker
-      leds[i] = makeDarker( leds[i], fadeDownAmount);
+      settings.leds[i] = makeDarker( settings.leds[i], fadeDownAmount);
     } else {
       // This pixel is getting brighter
-      leds[i] = makeBrighter( leds[i], fadeUpAmount);
+      settings.leds[i] = makeBrighter( settings.leds[i], fadeUpAmount);
       // now check to see if we've maxxed out the brightness
-      if ( leds[i].r == 255 || leds[i].g == 255 || leds[i].b == 255) {
+      if ( settings.leds[i].r == 255 || settings.leds[i].g == 255 || settings.leds[i].b == 255) {
         // if so, turn around and start getting darker
         setPixelDirection(i, GETTING_DARKER);
       }
@@ -80,8 +85,8 @@ void colortwinkles()
     // Now consider adding a new random twinkle
     if ( random8() < DENSITY ) {
       int pos = random16(NUM_LEDS);
-      if ( !leds[pos]) {
-        leds[pos] = ColorFromPalette( gCurrentPalette, random8(), STARTING_BRIGHTNESS, NOBLEND);
+      if ( !settings.leds[pos]) {
+        settings.leds[pos] = ColorFromPalette( settings.gCurrentPalette, random8(), STARTING_BRIGHTNESS, NOBLEND);
         setPixelDirection(pos, GETTING_BRIGHTER);
       }
     }
@@ -90,13 +95,13 @@ void colortwinkles()
 
 void cloudTwinkles()
 {
-  gCurrentPalette = CloudColors_p; // Blues and whites!
+  settings.gCurrentPalette = CloudColors_p; // Blues and whites!
   colortwinkles();
 }
 
 void rainbowTwinkles()
 {
-  gCurrentPalette = RainbowColors_p;
+  settings.gCurrentPalette = RainbowColors_p;
   colortwinkles();
 }
 
@@ -104,7 +109,7 @@ void snowTwinkles()
 {
   CRGB w(85, 85, 85), W(CRGB::White);
 
-  gCurrentPalette = CRGBPalette16( W, W, W, W, w, w, w, w, w, w, w, w, w, w, w, w );
+  settings.gCurrentPalette = CRGBPalette16( W, W, W, W, w, w, w, w, w, w, w, w, w, w, w, w );
   colortwinkles();
 }
 
@@ -112,7 +117,8 @@ void incandescentTwinkles()
 {
   CRGB l(0xE1A024);
 
-  gCurrentPalette = CRGBPalette16( l, l, l, l, l, l, l, l, l, l, l, l, l, l, l, l );
+  settings.gCurrentPalette = CRGBPalette16( l, l, l, l, l, l, l, l, l, l, l, l, l, l, l, l );
   colortwinkles();
 }
 
+#endif
