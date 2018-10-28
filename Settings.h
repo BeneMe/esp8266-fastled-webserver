@@ -40,7 +40,7 @@ public:
 
   CRGBPalette16 gCurrentPalette;
   
-  CRGB leds[NUM_LEDS];
+  CRGB leds[NUM_LEDS +1];
 
   uint8_t twinkleSpeed = 4;
   uint8_t twinkleDensity = 5;

@@ -1,14 +1,50 @@
 #include "Patterns.h"
 #include "defines.h"
+#include "Twinkles.h"
 
 Patterns::Patterns(Settings& settings) 
-: settings(settings) {
+: settings(settings),
+  twinkleFox(settings),
+  twinkles(settings)
+ {
   /*
   patterns[0] = { pride,                  "Pride" };
   patterns[1] = { colorWaves,             "Color Waves" };
   */
   //patternsMap["Pride"] =  std::bind(&Patterns::pride, this);
   patternsVector.push_back({std::bind(&Patterns::pride, this), "Pride"});
+  patternsVector.push_back({std::bind(&Patterns::canvas, this), "Canvas"});
+  patternsVector.push_back({std::bind(&Patterns::colorWaves, this), "Color Waves"});
+  patternsVector.push_back({std::bind(&Twinkles::rainbowTwinkles, twinkles), "Rainbow Twinkles"});
+  patternsVector.push_back({std::bind(&Twinkles::snowTwinkles, twinkles), "Snow Twinkles"});
+  patternsVector.push_back({std::bind(&Twinkles::cloudTwinkles, twinkles), "Cloud Twinkles"});
+  patternsVector.push_back({std::bind(&Twinkles::incandescentTwinkles, twinkles), "Incandescent Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::retroC9Twinkles, twinkleFox), "Retro C9 Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::redWhiteTwinkles, twinkleFox), "Red & White Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::blueWhiteTwinkles, twinkleFox), "Blue & White Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::redGreenWhiteTwinkles, twinkleFox), "Red, Green & White Twinkle"});
+  patternsVector.push_back({std::bind(&TwinkleFox::fairyLightTwinkles, twinkleFox), "Fairy Light Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::snow2Twinkles, twinkleFox), "Snow 2 Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::hollyTwinkles, twinkleFox), "Holly Twinkles"});
+
+  patternsVector.push_back({std::bind(&TwinkleFox::iceTwinkles, twinkleFox), "Ice Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::partyTwinkles, twinkleFox), "Party Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::forestTwinkles, twinkleFox), "Forest Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::lavaTwinkles, twinkleFox), "Lava Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::fireTwinkles, twinkleFox), "Fire Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::cloud2Twinkles, twinkleFox), "Cloud 2 Twinkles"});
+  patternsVector.push_back({std::bind(&TwinkleFox::oceanTwinkles, twinkleFox), "Ocean Twinkles"});
+  patternsVector.push_back({std::bind(&Patterns::rainbow, this), "Rainbow"});
+  patternsVector.push_back({std::bind(&Patterns::rainbowWithGlitter, this), "Rainbow With Glitter"});
+  patternsVector.push_back({std::bind(&Patterns::rainbowSolid, this), "Solid Rainbow"});
+  patternsVector.push_back({std::bind(&Patterns::confetti, this), "Confetti"});
+  patternsVector.push_back({std::bind(&Patterns::sinelon, this), "Sinelon"});
+  patternsVector.push_back({std::bind(&Patterns::bpm, this), "Beat"});
+  patternsVector.push_back({std::bind(&Patterns::juggle, this), "Juggle"});
+  patternsVector.push_back({std::bind(&Patterns::fire, this), "Fire"});
+  patternsVector.push_back({std::bind(&Patterns::water, this), "Water"});
+  patternsVector.push_back({std::bind(&Patterns::showSolidColor, this), "Solid Color"});
+
   patternCount = patternsVector.size();
 
   palettes = {
@@ -78,6 +114,12 @@ const Patterns::PatternAndName Patterns::patterns[] = {
 
   { showSolidColor,         "Solid Color" }
 };*/
+
+
+void Patterns::showSolidColor()
+{
+  fill_solid(settings.leds, NUM_LEDS, settings.solidColor);
+}
 
 
 // Patterns from FastLED example DemoReel100: https://github.com/FastLED/FastLED/blob/master/examples/DemoReel100/DemoReel100.ino
@@ -354,4 +396,7 @@ void Patterns::colorwaves( CRGB* ledarray, uint16_t numleds, CRGBPalette16& pale
 
     nblend( ledarray[pixelnumber], newcolor, 128);
   }
+}
+void Patterns::canvas() {
+    Serial.print("NOP, setting leds by websocket");
 }

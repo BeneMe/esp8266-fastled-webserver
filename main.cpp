@@ -222,7 +222,7 @@ void loop() {
     FastLED.show();
     // FastLED.delay(15);
     return;
-  }
+  } else {
 
   // EVERY_N_SECONDS(10) {
   //   Serial.print( F("Heap: ") ); Serial.println(system_get_free_heap_size());
@@ -251,7 +251,8 @@ void loop() {
   FastLED.show();
 
   // insert a delay to keep the framerate modest
-  // FastLED.delay(1000 / FRAMES_PER_SECOND);
+  //FastLED.delay(1000 / FRAMES_PER_SECOND);
+  }
 }
 
 
@@ -498,10 +499,6 @@ void strandTest()
   settings.leds[i] = settings.solidColor;
 }
 
-void showSolidColor()
-{
-  fill_solid(settings.leds, NUM_LEDS, settings.solidColor);
-}
 
 
 // Alternate rendering function just scrolls the current palette

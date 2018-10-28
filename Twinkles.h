@@ -11,7 +11,13 @@
 #define DENSITY            255
 
 enum { GETTING_DARKER = 0, GETTING_BRIGHTER = 1 };
+class Twinkles {
+  public:
+  Settings settings;
+  Twinkles(Settings& settings)
+  : settings(settings) {
 
+  }
 CRGB makeBrighter( const CRGB& color, fract8 howMuchBrighter)
 {
   CRGB incrementalColor = color;
@@ -120,5 +126,5 @@ void incandescentTwinkles()
   settings.gCurrentPalette = CRGBPalette16( l, l, l, l, l, l, l, l, l, l, l, l, l, l, l, l );
   colortwinkles();
 }
-
+};
 #endif

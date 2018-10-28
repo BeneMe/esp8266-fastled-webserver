@@ -5,6 +5,8 @@
 #include <FastLED.h>
 #include "Settings.h"
 #include <list>
+#include "TwinkleFOX.h"
+#include "Twinkles.h"
 
 // Forward declarations of an array of cpt-city gradient palettes, and
 // a count of how many there are.  The actual color palette definitions
@@ -17,7 +19,6 @@ extern const uint8_t gGradientPaletteCount;
 class Patterns {
 
 
-//typedef void (Patterns::*Pattern)();
 typedef std::function<void ()> Pattern;
 typedef Pattern PatternList[];
 class PatternAndName {
@@ -37,7 +38,8 @@ typedef PaletteAndName PaletteAndNameList[];
   private:
   Settings& settings;
   CRGBPalette16 IceColors_p = CRGBPalette16(CRGB::Black, CRGB::Blue, CRGB::Aqua, CRGB::White);
-  
+  TwinkleFox twinkleFox;
+  Twinkles twinkles;
 
 
   public:
@@ -45,27 +47,6 @@ typedef PaletteAndName PaletteAndNameList[];
   void pride();
   void colorWaves();
 
-  // twinkle patterns
-  void rainbowTwinkles();
-  void snowTwinkles();
-  void cloudTwinkles();
-  void incandescentTwinkles();
-
-  // TwinkleFOX patterns
-  /* void retroC9Twinkles();
-  void redWhiteTwinkles();
-  void blueWhiteTwinkles();
-  void redGreenWhiteTwinkles();
-  void fairyLightTwinkles();
-  void snow2Twinkles();
-  void hollyTwinkles();
-  void iceTwinkles();
-  void partyTwinkles();
-  void forestTwinkles();
-  void lavaTwinkles();
-  void fireTwinkles();
-  void cloud2Twinkles();
-  void oceanTwinkles(); */
 
   void rainbow();
   void rainbowWithGlitter();
@@ -76,6 +57,7 @@ typedef PaletteAndName PaletteAndNameList[];
   void juggle();
   void fire();
   void water();
+  void canvas();
 
   void showSolidColor();
 

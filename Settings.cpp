@@ -44,12 +44,12 @@ void Settings::loadSettings()
 
   currentPaletteIndex = EEPROM.read(8);
 
-  /* TODO
+  /*
   if (currentPaletteIndex < 0)
     currentPaletteIndex = 0;
   else if (currentPaletteIndex >= Patterns::paletteCount)
     currentPaletteIndex = Patterns::paletteCount - 1;
-    */
+  */
 }
 
 

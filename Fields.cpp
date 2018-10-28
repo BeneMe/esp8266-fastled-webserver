@@ -17,20 +17,20 @@ Fields::Fields(Settings& settings, Patterns& patterns)
   fieldsMap["brightness"] = { "brightness", "Brightness", NumberFieldType, 1, 255 };
   
   fieldsMap["pattern"] = { "pattern", "Pattern", SelectFieldType, 0, patterns.patternCount, std::bind(&Fields::getPattern, this), std::bind(&Fields::getPatterns, this) };
-  /* TODO
-  fieldsMap["palette"] = { "palette", "Palette", SelectFieldType, 0, Patterns::paletteCount, getPalette, getPalettes };
-  fieldsMap["speed"] = { "speed", "Speed", NumberFieldType, 1, 255, getSpeed };
+  
+  fieldsMap["palette"] = { "palette", "Palette", SelectFieldType, 0, patterns.patternCount, std::bind(&Fields::getPalette, this), std::bind(&Fields::getPalettes, this) };
+  fieldsMap["speed"] = { "speed", "Speed", NumberFieldType, 1, 255, std::bind(&Fields::getSpeed, this) };
   fieldsMap["autoplay"] = { "autoplay", "Autoplay", SectionFieldType };
-  fieldsMap["autoplayDuration"] = { "autoplayDuration", "Autoplay Duration", NumberFieldType, 0, 255, getAutoplayDuration };
+  fieldsMap["autoplayDuration"] = { "autoplayDuration", "Autoplay Duration", NumberFieldType, 0, 255, std::bind(&Fields::getAutoplayDuration, this) };
   fieldsMap["solidColorSection"] = { "solidColor", "Solid Color", SectionFieldType };
-  fieldsMap["solidColor"] = { "solidColor", "Color", ColorFieldType, 0, 255, getSolidColor };
+  fieldsMap["solidColor"] = { "solidColor", "Color", ColorFieldType, 0, 255, std::bind(&Fields::getSolidColor, this) };
   fieldsMap["fire"] = { "fire", "Fire & Water", SectionFieldType };
-  fieldsMap["cooling"] = { "cooling", "Cooling", NumberFieldType, 0, 255, getCooling };
-  fieldsMap["sparking"] = { "sparking", "Sparking", NumberFieldType, 0, 255, getSparking };
+  fieldsMap["cooling"] = { "cooling", "Cooling", NumberFieldType, 0, 255, std::bind(&Fields::getCooling, this) };
+  fieldsMap["sparking"] = { "sparking", "Sparking", NumberFieldType, 0, 255, std::bind(&Fields::getSparking, this) };
   fieldsMap["twinkles"] = { "twinkles", "Twinkles", SectionFieldType };
-  fieldsMap["twinkleSpeed"] = { "twinkleSpeed", "Twinkle Speed", NumberFieldType, 0, 8, getTwinkleSpeed };
-  fieldsMap["twinkleDensity"] = { "twinkleDensity", "Twinkle Density", NumberFieldType, 0, 8, getTwinkleDensity };
-  */
+  fieldsMap["twinkleSpeed"] = { "twinkleSpeed", "Twinkle Speed", NumberFieldType, 0, 8, std::bind(&Fields::getTwinkleSpeed, this) };
+  fieldsMap["twinkleDensity"] = { "twinkleDensity", "Twinkle Density", NumberFieldType, 0, 8, std::bind(&Fields::getTwinkleDensity, this) };
+  
   fieldCount = fieldsMap.size();
 }
 
@@ -124,11 +124,14 @@ String Fields::getTwinkleDensity() {
 
 const String Fields::getFieldsJson() {
   String json = "[";
-
+  bool isFirstField = true;
   for (std::pair<std::string, Field> fieldNode : fieldsMap) {
 
     Field field = fieldNode.second;
-
+    if (!isFirstField) {
+      isFirstField = false;
+      json += ",";
+    }
     json += "{\"name\":\"" + field.name + "\",\"label\":\"" + field.label + "\",\"type\":\"" + field.type + "\"";
 
     if(field.getValue) {
@@ -152,9 +155,7 @@ const String Fields::getFieldsJson() {
     }
 
     json += "}";
-
-    //TODO if (i < fieldCount - 1)
-    json += ",";
+    
   }
 
   json += "]";
