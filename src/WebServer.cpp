@@ -2,7 +2,12 @@
 #include <EEPROM.h>
 
 WebServer::WebServer(Fields& fields, Settings& settings, Patterns& patterns) 
-: webServer(80), fields(fields), settings(settings), patterns(patterns), fsBrowser(FSBrowser())
+: 
+webServer(80), 
+fields(fields), 
+settings(settings), 
+patterns(patterns),
+fsBrowser()
 {
 }
 

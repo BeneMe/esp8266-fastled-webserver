@@ -8,11 +8,6 @@
 #include "TwinkleFOX.h"
 #include "Twinkles.h"
 
-// Forward declarations of an array of cpt-city gradient palettes, and
-// a count of how many there are.  The actual color palette definitions
-// are at the bottom of this file.
-extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
-extern const uint8_t gGradientPaletteCount;
 
 
 

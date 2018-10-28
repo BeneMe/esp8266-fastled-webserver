@@ -16,8 +16,8 @@ class Twinkles {
   Settings settings;
   Twinkles(Settings& settings)
   : settings(settings) {
-
   }
+
 CRGB makeBrighter( const CRGB& color, fract8 howMuchBrighter)
 {
   CRGB incrementalColor = color;

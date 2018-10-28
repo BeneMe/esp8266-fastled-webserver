@@ -12,6 +12,8 @@
 
 class WebServer {
   private:
+    Patterns patterns;
+    Settings settings;
     FSBrowser fsBrowser;
   public:
     WebServer(Fields &fields, Settings &settings, Patterns& patterns);
@@ -20,8 +22,7 @@ class WebServer {
     ESP8266WebServer webServer;
     WebSocketsServer webSocketsServer = WebSocketsServer(81);
     Fields fields;
-    Patterns patterns;
-    Settings settings;
+    
     
     
     void webServerSetup();
