@@ -354,6 +354,10 @@ void WebServer::webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, si
       Serial.printf("[%u] get binary length: %u\n", num, length);
       hexdump(payload, length);
 
+      for (int i = 0; i < length; i += 3) {
+        settings.leds[i / 3].setRGB(payload[i], payload[(i + 1)], payload[(i + 2)]);
+      }
+      FastLED.show();
       // send message to client
       // webSocketsServer.sendBIN(num, payload, lenght);
       break;

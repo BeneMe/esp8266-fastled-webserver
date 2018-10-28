@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+        <head>
+                <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>ESP8266 + FastLED by Evil Genius Labs</title>
+              
+                <!-- request CSS from internet CDN -->
+                <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
+              
+                <!-- request CSS from the ESP8266 web server -->
+                <link rel="stylesheet" href="css/bootstrap.min.css">
+              
+                <link rel="stylesheet" href="css/styles.css">
+              
+                <link rel="icon" href="images/atom196.png">
+              </head>
+              
+<body>
+
+<nav class="navbar navbar-default navbar-static-top" id="top" role="banner">
+    <div class="container">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="https://www.evilgeniuslabs.org" target="_blank"><img src="/images/atom196.png" style="width: 24px; height: 24px;" /></a>
+        <a class="navbar-brand" href="https://www.evilgeniuslabs.org" target="_blank">Evil Genius Labs</a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+        <ul class="nav navbar-nav">
+        <li><a href="/">ESP8266 + FastLED <span class="sr-only">(current)</span></a></li>
+        <li><a href="/canvascast.htm" target="_blank" title="Canvas Cast">Canvas Cast</a></li>
+        <li><a href="/simple.htm" target="_blank" title="Simple Mode">Simple</a></li>
+        <li><a href="/edit.htm" target="_blank" title="Edit Files">Files</a></li>
+        <li><a href="/update" target="_blank" title="Update Firmware">Firmware</a></li>
+        <li class="active"><a href="/wifi.htm" target="_blank" title="Wi-Fi Settings">Wi-Fi</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="https://github.com/jasoncoon/esp8266-fastled-webserver">
+            <img style="height: 16px;" src="/images/github.ico" />
+            </a>
+        </li>
+        </ul>
+    </div>
+    </div>
+</nav>
+
+
+<div class="wsBar">
+        <div class="brightness">
+          Matrix brightness:
+          <small>0%</small>
+          <input id="matrix-brightness" type="range" min="0" max="255" step="1" value="127" >
+          <small>100%</small>
+        </div>
+      
+        <h4><a href="https://github.com/owenmcateer/canvas-cast" target="_blank">Canvas Cast</a></h4>
+        <div class="status"></div>
+        <div class="statusTxt"></div>
+        <div class="statusIP"></div>
+      </div>
+<script src="./js/canvas.js"></script>
+<script>
+// Config
+const matrix = {
+  // Matrix IP & port
+  ip: '192.168.178.29:81',
+  // Matrix pixel size
+  width: 10,
+  height: 15,
+  // Matrix brightness 0-255
+  brightness: 127,
+  // Context type (2d/webgl)
+  type: '2d',
+};
+
+// Start WS Matrix
+canvasCast.init(matrix);
+
+// Create Canvas
+const canvas = document.createElement('canvas');
+canvas.width = matrix.width;
+canvas.height = matrix.height;
+document.body.appendChild(canvas);
+context = canvas.getContext('2d');
+
+//
+// Your code here
+// Just remember to call `cast()` on each frame:
+// canvasCast.cast(canvas);
+//
+
+
+//
+// Webcam test
+//
+const video = document.createElement('video');
+document.body.appendChild(video);
+function getVideo() {
+  navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    .then(localMediaStream => {
+      try {
+        video.srcObject = localMediaStream;
+      } catch (error) {
+        video.src = window.URL.createObjectURL(localMediaStream);
+      }
+      video.play();
+    })
+    .catch(err => {
+      console.error(`No access to webcam`, err);
+    });
+}
+function paintToCanvas() {
+  // Add video
+  context.drawImage(video, 0, 0, matrix.width, matrix.height);
+
+  // Cast data
+  canvasCast.cast(canvas);
+}
+getVideo();
+video.addEventListener('canplay', () => {
+  setInterval(paintToCanvas, 1000 / 30);
+});
+
+</script>
+</body>
+</html>
