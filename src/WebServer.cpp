@@ -1,9 +1,12 @@
 #include "WebServer.h"
 #include <EEPROM.h>
 
+
+
+ESP8266WebServer espWebServer(80);
+
 WebServer::WebServer(Fields& fields, Settings& settings, Patterns& patterns) 
 : 
-webServer(80), 
 fields(fields), 
 settings(settings), 
 patterns(patterns),
@@ -19,7 +22,7 @@ void WebServer::sendInt(uint8_t value)
 
 void WebServer::sendString(String value)
 {
-  webServer.send(200, "text/plain", value);
+  espWebServer.send(200, "text/plain", value);
 }
 
 
@@ -37,54 +40,54 @@ void WebServer::broadcastString(String name, String value)
 
 void WebServer::webServerSetup() {
   
-  httpUpdateServer.setup(&webServer);
-  webServer.on("/all", HTTP_GET, [this]() {
+  httpUpdateServer.setup(&espWebServer);
+  espWebServer.on("/all", HTTP_GET, [this]() {
     String json = fields.getFieldsJson();
-    webServer.send(200, "text/json", json);
+    espWebServer.send(200, "text/json", json);
   });
 
-  webServer.on("/fieldValue", HTTP_GET, [this]() {
-    String name = webServer.arg("name");
+  espWebServer.on("/fieldValue", HTTP_GET, [this]() {
+    String name = espWebServer.arg("name");
     String value = fields.getFieldValue(name);
-    webServer.send(200, "text/json", value);
+    espWebServer.send(200, "text/json", value);
   });
 
-  webServer.on("/fieldValue", HTTP_POST, [this]() {
-    String name = webServer.arg("name");
-    String value = webServer.arg("value");
+  espWebServer.on("/fieldValue", HTTP_POST, [this]() {
+    String name = espWebServer.arg("name");
+    String value = espWebServer.arg("value");
     String newValue = fields.setFieldValue(name, value);
-    webServer.send(200, "text/json", newValue);
+    espWebServer.send(200, "text/json", newValue);
   });
 
-  webServer.on("/power", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/power", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     setPower(value.toInt());
     sendInt(value.toInt());
   });
 
-  webServer.on("/cooling", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/cooling", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     settings.cooling = value.toInt();
     broadcastInt("cooling", settings.cooling);
     sendInt(settings.cooling);
   });
 
-  webServer.on("/sparking", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/sparking", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     settings.sparking = value.toInt();
     broadcastInt("sparking", settings.sparking);
     sendInt(settings.sparking);
   });
 
-  webServer.on("/speed", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/speed", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     settings.speed = value.toInt();
     broadcastInt("speed", settings.speed);
     sendInt(settings.speed);
   });
 
-  webServer.on("/twinkleSpeed", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/twinkleSpeed", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     settings.twinkleSpeed = value.toInt();
     if(settings.twinkleSpeed < 0) settings.twinkleSpeed = 0;
     else if (settings.twinkleSpeed > 8) settings.twinkleSpeed = 8;
@@ -92,8 +95,8 @@ void WebServer::webServerSetup() {
     sendInt(settings.twinkleSpeed);
   });
 
-  webServer.on("/twinkleDensity", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/twinkleDensity", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     settings.twinkleDensity = value.toInt();
     if(settings.twinkleDensity < 0) settings.twinkleDensity = 0;
     else if (settings.twinkleDensity > 8) settings.twinkleDensity = 8;
@@ -101,94 +104,96 @@ void WebServer::webServerSetup() {
     sendInt(settings.twinkleDensity);
   });
 
-  webServer.on("/solidColor", HTTP_POST, [this]() {
-    String r = webServer.arg("r");
-    String g = webServer.arg("g");
-    String b = webServer.arg("b");
+  espWebServer.on("/solidColor", HTTP_POST, [this]() {
+    String r = espWebServer.arg("r");
+    String g = espWebServer.arg("g");
+    String b = espWebServer.arg("b");
     setSolidColor(r.toInt(), g.toInt(), b.toInt());
     sendString(String(settings.solidColor.r) + "," + String(settings.solidColor.g) + "," + String(settings.solidColor.b));
   });
 
-  webServer.on("/pattern", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/pattern", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     setPattern(value.toInt());
     sendInt(settings.currentPatternIndex);
   });
 
-  webServer.on("/patternName", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/patternName", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     setPatternName(value);
     sendInt(settings.currentPatternIndex);
   });
 
-  webServer.on("/palette", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/palette", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     setPalette(value.toInt());
     sendInt(settings.currentPaletteIndex);
   });
 
-  webServer.on("/paletteName", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/paletteName", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     setPaletteName(value);
     sendInt(settings.currentPaletteIndex);
   });
 
-  webServer.on("/brightness", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/brightness", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     setBrightness(value.toInt());
     sendInt(settings.brightness);
   });
 
-  webServer.on("/autoplay", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/autoplay", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     setAutoplay(value.toInt());
     sendInt(settings.autoplay);
   });
 
-  webServer.on("/autoplayDuration", HTTP_POST, [this]() {
-    String value = webServer.arg("value");
+  espWebServer.on("/autoplayDuration", HTTP_POST, [this]() {
+    String value = espWebServer.arg("value");
     setAutoplayDuration(value.toInt());
     sendInt(settings.autoplayDuration);
   });
 
   //list directory
-  webServer.on("/list", HTTP_GET, [this]() {
-    fsBrowser.handleFileList(webServer);
+  espWebServer.on("/list", HTTP_GET, [this]() {
+    fsBrowser.handleFileList(espWebServer);
   });
 
   //load editor
-  webServer.on("/edit", HTTP_GET, [this]() {
-    if (!fsBrowser.handleFileRead("/edit.htm", webServer)) webServer.send(404, "text/plain", "FileNotFound");
+  espWebServer.on("/edit", HTTP_GET, [this]() {
+    if (!fsBrowser.handleFileRead("/edit.htm", espWebServer)) espWebServer.send(404, "text/plain", "FileNotFound");
   });
   //create file
-  webServer.on("/edit", HTTP_PUT, [this]() {
-    fsBrowser.handleFileCreate(webServer);
+  espWebServer.on("/edit", HTTP_PUT, [this]() {
+    fsBrowser.handleFileCreate(espWebServer);
   });
   //delete file
-  webServer.on("/edit", HTTP_DELETE, [this]() {
-    fsBrowser.handleFileDelete(webServer);
+  espWebServer.on("/edit", HTTP_DELETE, [this]() {
+    fsBrowser.handleFileDelete(espWebServer);
   });
   //first callback is called after the request has ended with all parsed arguments
   //second callback handles file uploads at that location
-  webServer.on("/edit", HTTP_POST, [this]() {
-    webServer.send(200, "text/plain", "");
+  espWebServer.on("/edit", HTTP_POST, [this]() {
+    espWebServer.send(200, "text/plain", "");
   }, [this]() {
-    fsBrowser.handleFileUpload(webServer);
+    fsBrowser.handleFileUpload(espWebServer);
   });
 
-  webServer.serveStatic("/", SPIFFS, "/", "max-age=86400");
+  espWebServer.serveStatic("/", SPIFFS, "/", "max-age=86400");
 
-  webServer.begin();
+  espWebServer.begin();
   Serial.println("HTTP web server started");
 
   webSocketsServer.begin();
   webSocketsServer.onEvent([this](uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
     webSocketEvent(num, type, payload, length);
     });
-  Serial.println("Web socket server started");
-  
+  Serial.println("Web socket server started"); 
 }
 
+void WebServer::handleClient() {
+  espWebServer.handleClient();
+}
 
 void WebServer::setBrightness(uint8_t value)
 {

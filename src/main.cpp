@@ -1,6 +1,12 @@
 /*
- * ESP8266 + FastLED + IR Remote: https://github.com/jasoncoon/esp8266-fastled-webserver
- * Copyright (C) 2015-2016 Jason Coon
+ * Credits to
+ * -esp8266-fastled-webserver:
+ *    https://github.com/jasoncoon/esp8266-fastled-webserver
+ *    Copyright (C) 2015-2016 Jason Coon
+ * 
+ * -canvas-cast
+ *    Owen McAteer
+ *    https://github.com/owenmcateer/canvas-cast
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,26 +20,32 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
+//#include "Looper.h" 
 
-#include "Looper.h"
-
+#include <ESP8266WiFi.h>
 
 //#define RECV_PIN D4
 //IRrecv irReceiver(RECV_PIN);
 
 //#include "Commands.h"
 
+//Looper* looper;
 
-Looper looper = Looper();
-
-
-void setup() {
-  looper.setup();
+void setup(void) {
+  Serial.begin(115200);
+  delay(100);
+  Serial.setDebugOutput(true);
+  Serial.print("Starting Setup\n");
+  
+  //looper = new Looper();
+  Serial.print("Looper created\n");
+  //looper->setup();
+  Serial.print("Setup finished\n");
 }
 
-void loop() {
-  looper.loop();
+void loop(void) {
+  //looper->loop();
 }
 
 

@@ -22,21 +22,22 @@
 
 class WifiMgr {
     public:
-        WifiMgr(Settings& settings, WebServer& webServer);
+        explicit WifiMgr(Settings& settings, WebServer& webServer);
+        ~WifiMgr() = default;
+        WifiMgr& operator=(const WifiMgr&) = delete;
 
         // AP mode password
         const char WiFiAPPSK[] = {};
 
         // Wi-Fi network to connect to (if not in AP mode)
-        char* ssid = "";
-        char* password = "";
+        char* ssid = (char *) "";
+        char* password = (char *) "";
 
         unsigned long futureTimeout = 0;
         uint16_t connectionTimeout = 20000;
 
 
         template <typename Generic> void debugPrintln(Generic text);
-        void startAp();
         String getWiFiJson();
         void checkWiFi();
 

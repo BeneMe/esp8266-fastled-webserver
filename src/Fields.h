@@ -71,8 +71,9 @@ class Fields {
 
   
   public:
-  Fields(Settings &settings, Patterns& patterns);
-    
+  explicit Fields(Settings &settings, Patterns& patterns);
+  ~Fields() = default;
+  Fields& operator=(const Fields&) = delete;
   
   String setBrightness(String value);
   String setPower(String value);

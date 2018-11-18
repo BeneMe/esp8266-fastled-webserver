@@ -1,5 +1,8 @@
 #include "WifiMgr.h"
 
+extern ESP8266WebServer espWebServer;
+
+
 WifiMgr::WifiMgr(Settings &settings, WebServer& webServer)
 : settings(settings), webServer(webServer) {
 
@@ -10,42 +13,6 @@ template <typename Generic> void WifiMgr::debugPrintln(Generic text) {
     Serial.print("*WiFi: ");
     Serial.println(text);
   }
-}
-
-void WifiMgr::startAp() {
-  // WiFi.disconnect();
-
-  // apMode = true;
-
-  //  WiFi.mode(WIFI_AP_STA);
-  // debugPrintln("SET AP STA");
-
-  String AP_NameString = "ESP8266-";
-  AP_NameString += String(ESP.getChipId(), HEX);
-
-  char AP_NameChar[AP_NameString.length() + 1];
-  memset(AP_NameChar, 0, AP_NameString.length() + 1);
-
-  for (unsigned int i = 0; i < AP_NameString.length(); i++)
-    AP_NameChar[i] = AP_NameString.charAt(i);
-
-  debugPrintln("Starting soft AP");
-
-  if (WiFiAPPSK != NULL) {
-    debugPrintln(WiFi.softAP(AP_NameChar, WiFiAPPSK) ? "ready" : "failed");
-  } else {
-    debugPrintln(WiFi.softAP(AP_NameChar) ? "ready" : "failed");
-  }
-
-  debugPrintln("Connect to Wi-Fi access point: ");
-  debugPrintln(AP_NameChar);
-
-  delay(500); // Without delay I've seen the IP address blank
-  debugPrintln("AP IP address: ");
-  debugPrintln(WiFi.softAPIP());
-
-  //  dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
-  //  dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
 }
 
 String WifiMgr::getWiFiJson() {
@@ -78,7 +45,30 @@ String WifiMgr::getWiFiJson() {
 }
 
 void WifiMgr::initializeWiFi() {
-  WiFi.mode(WIFI_AP_STA);
+  WiFi.mode(WIFI_STA);
+  Serial.printf("Connecting to %s\n", ssid);
+  if (String(WiFi.SSID()) != String(ssid)) {
+    WiFi.begin(ssid, password);
+  }
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    if(settings.leds[75].r == 255) {
+      settings.leds[75].r = 0;
+    } else {
+      settings.leds[75].r = 255;
+    }
+    settings.leds[75].g = 0;
+    settings.leds[75].b = 0;
+    Serial.print(".");
+    FastLED.show();
+  }
+
+  Serial.print("Connected! Open http://");
+  Serial.print(WiFi.localIP());
+  Serial.println(" in your browser");
+  
+  /*WiFi.mode(WIFI_AP_STA);
 
   // Set Hostname.
   String hostname = String(HOSTNAME);
@@ -113,9 +103,9 @@ void WifiMgr::initializeWiFi() {
 
   startAp();
 
-  webServer.webServer.on("/wifi", HTTP_POST, [this]() {
-    String ssid = webServer.webServer.arg("ssid");
-    String password = webServer.webServer.arg("password");
+  espWebServer.on("/wifi", HTTP_POST, [this]() {
+    String ssid = espWebServer.arg("ssid");
+    String password = espWebServer.arg("password");
     // String mode = webServer.arg("mode");
 
     char ssidChars[50];
@@ -135,14 +125,14 @@ void WifiMgr::initializeWiFi() {
     WiFi.begin(ssidChars, passwordChars);
     // futureTimeout = millis() + connectionTimeout;
 
-    webServer.webServer.sendHeader("Location", "/wifi.htm");
-    webServer.webServer.send(303);
+    espWebServer.sendHeader("Location", "/wifi.htm");
+    espWebServer.send(303);
   });
 
-  webServer.webServer.on("/wifi", HTTP_GET, [this]() {
+  espWebServer.on("/wifi", HTTP_GET, [this]() {
     String json = getWiFiJson();
-    webServer.webServer.send(200, "application/json", json);
-  });
+    espWebServer.send(200, "application/json", json);
+  }); */
 }
 
 void WifiMgr::checkWiFi() {

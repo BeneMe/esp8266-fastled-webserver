@@ -9,7 +9,10 @@ class FSBrowser {
   
 
   public:
-  FSBrowser();
+  explicit FSBrowser();
+  ~FSBrowser() = default;
+  FSBrowser& operator=(const FSBrowser&) = delete;
+
 
 //holds the current upload
   File fsUploadFile;

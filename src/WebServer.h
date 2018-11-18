@@ -10,22 +10,26 @@
 #include "TwinkleFOX.h"
 #include "Patterns.h"
 
+
 class WebServer {
   private:
     Patterns patterns;
     Settings settings;
     FSBrowser fsBrowser;
   public:
-    WebServer(Fields &fields, Settings &settings, Patterns& patterns);
+    explicit WebServer(Fields &fields, Settings &settings, Patterns& patterns);
+    ~WebServer() = default;
+    WebServer& operator=(const WebServer&) = delete;
+    
+    
     ESP8266HTTPUpdateServer httpUpdateServer;
-    int port = 80;
-    ESP8266WebServer webServer;
     WebSocketsServer webSocketsServer = WebSocketsServer(81);
     Fields fields;
     
     
     
     void webServerSetup();
+    void handleClient();
     void sendInt(uint8_t value);
     void sendString(String value);
     void broadcastInt(String name, uint8_t value);

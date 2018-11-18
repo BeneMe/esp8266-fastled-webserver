@@ -1,10 +1,10 @@
 
 
 #include "Looper.h"
+#include "GradientPalettes.h"
 
-
-Looper::Looper() :
-    settings(),
+Looper::Looper()
+  : settings(),
     patterns(settings),
     fields(settings, patterns),
     webServer(fields, settings, patterns),
@@ -12,9 +12,9 @@ Looper::Looper() :
     apMode(false)
  {
     gTargetPalette = gGradientPalettes[0];
+    apMode = false;
 }
 
-Looper::~Looper() {}
 
 // scale the brightness of all pixels down
 void Looper::dimAll(byte value)
@@ -25,9 +25,7 @@ void Looper::dimAll(byte value)
 }
 
 void Looper::setup() {
-  Serial.begin(115200);
-  delay(100);
-  Serial.setDebugOutput(true);
+  
 
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(settings.leds, NUM_LEDS);         // for WS2812 (Neopixel)
   //FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS); // for APA102 (Dotstar)
@@ -68,51 +66,8 @@ void Looper::setup() {
   }
 
   //disabled due to https://github.com/jasoncoon/esp8266-fastled-webserver/issues/62
-  //initializeWiFi();
+  wifiMgr.initializeWiFi();
 
-  if (apMode)
-  {
-    WiFi.mode(WIFI_AP);
-
-    // Do a little work to get a unique-ish name. Append the
-    // last two bytes of the MAC (HEX'd) to "Thing-":
-    uint8_t mac[WL_MAC_ADDR_LENGTH];
-    WiFi.softAPmacAddress(mac);
-    String macID = String(mac[WL_MAC_ADDR_LENGTH - 2], HEX) +
-                   String(mac[WL_MAC_ADDR_LENGTH - 1], HEX);
-    macID.toUpperCase();
-    String AP_NameString = "ESP8266 Thing " + macID;
-
-    char AP_NameChar[AP_NameString.length() + 1];
-    memset(AP_NameChar, 0, AP_NameString.length() + 1);
-
-    for (int i = 0; i < AP_NameString.length(); i++)
-      AP_NameChar[i] = AP_NameString.charAt(i);
-
-    WiFi.softAP(AP_NameChar, wifiMgr.WiFiAPPSK);
-
-    Serial.printf("Connect to Wi-Fi access point: %s\n", AP_NameChar);
-    Serial.println("and open http://192.168.4.1 in your browser");
-  }
-  else
-  {
-    WiFi.mode(WIFI_STA);
-    Serial.printf("Connecting to %s\n", wifiMgr.ssid);
-    if (String(WiFi.SSID()) != String(wifiMgr.ssid)) {
-      WiFi.begin(wifiMgr.ssid, wifiMgr.password);
-    }
-
-    while (WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
-    }
-
-    Serial.print("Connected! Open http://");
-    Serial.print(WiFi.localIP());
-    Serial.println(" in your browser");
-  }
-
-  //TODO checkWiFi();
 
   webServer.webServerSetup();
 
@@ -124,15 +79,14 @@ void Looper::loop() {
   // Add entropy to random number generator; we use a lot of it.
   random16_add_entropy(random(65535));
 
-  //TODO
-  /*
+ 
   EVERY_N_SECONDS(10) {
-     checkWiFi();
-  }*/
+     wifiMgr.checkWiFi();
+  }
 
 //  dnsServer.processNextRequest();
   webServer.webSocketsServer.loop();
-  webServer.webServer.handleClient();
+  webServer.handleClient();
 
 //  handleIrInput();
 

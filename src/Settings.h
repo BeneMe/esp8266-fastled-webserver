@@ -9,8 +9,9 @@
 
 class Settings {
 public:
-  Settings();
-  virtual ~Settings();
+  explicit Settings();
+  ~Settings() = default;
+  Settings& operator=(const Settings&) = delete;
 
   void loadSettings();
   uint8_t power = 1;

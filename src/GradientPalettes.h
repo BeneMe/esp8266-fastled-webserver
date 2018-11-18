@@ -1,3 +1,8 @@
+#ifndef GRADIENT_PALETTES_H
+#define GRADIENT_PALETTES_H
+
+
+
 // From ColorWavesWithPalettes by Mark Kriegsman: https://gist.github.com/kriegsman/8281905786e8b2632aeb
 
 // Gradient Color Palette definitions for 33 different cpt-city color palettes.
@@ -516,3 +521,5 @@ const TProgmemRGBGradientPalettePtr gGradientPalettes[] = {
 const uint8_t gGradientPaletteCount =
   sizeof( gGradientPalettes) / sizeof( TProgmemRGBGradientPalettePtr );
 
+
+#endif

@@ -38,7 +38,10 @@ typedef PaletteAndName PaletteAndNameList[];
 
 
   public:
-  Patterns(Settings& settings);
+  explicit Patterns(Settings& settings);
+  ~Patterns() = default;
+  Patterns& operator=(const Patterns&) = delete;
+
   void pride();
   void colorWaves();
 
