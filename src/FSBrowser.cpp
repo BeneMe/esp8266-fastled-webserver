@@ -124,3 +124,12 @@ void FSBrowser::handleFileList(ESP8266WebServer &webServer) {
   output += "]";
   webServer.send(200, "text/json", output);
 }
+
+
+boolean FSBrowser::existsOrZipped(String path) {
+  String pathWithGz = path + ".gz";
+  if(SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)){
+    return true;
+  }
+  return false;
+}

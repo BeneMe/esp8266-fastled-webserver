@@ -3,7 +3,6 @@
 
 #include <ESP8266WebServer.h>
 #include <FS.h>
-#include "Settings.h"
 
 class FSBrowser {
   
@@ -11,7 +10,6 @@ class FSBrowser {
   public:
   explicit FSBrowser();
   ~FSBrowser() = default;
-  FSBrowser& operator=(const FSBrowser&) = delete;
 
 
 //holds the current upload
@@ -24,6 +22,7 @@ class FSBrowser {
   void handleFileDelete(ESP8266WebServer &webServer);
   void handleFileCreate(ESP8266WebServer &webServer);
   void handleFileList(ESP8266WebServer &webServer);
+  boolean existsOrZipped(String path);
 };
 
 #endif

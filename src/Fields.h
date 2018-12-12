@@ -61,8 +61,8 @@ class Fields {
 
 
   private:
-  Settings settings;
-  Patterns patterns;
+  Settings& settings;
+  Patterns& patterns;
   static const String NumberFieldType;
   static const String BooleanFieldType;
   static const String SelectFieldType;

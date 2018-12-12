@@ -24,6 +24,7 @@ extern "C" {
 #include "Settings.h"
 #include "Patterns.h"
 #include "Twinkles.h"
+#include "WebSocketHandler.h"
 
 // Forward declarations of an array of cpt-city gradient palettes, and
 // a count of how many there are.  The actual color palette definitions
@@ -33,9 +34,7 @@ extern const uint8_t gGradientPaletteCount;
 
 class Looper {
     private:
-    uint8_t brightnessCount = 5;
-    uint8_t brightnessMap[5] = { 16, 32, 64, 128, 255 };
-    uint8_t brightnessIndex = 0;
+
 
     // ten seconds per color palette makes a good demo
     // 20-120 is better for deployment
@@ -49,19 +48,19 @@ class Looper {
     Patterns patterns;
     Fields fields;
     WebServer webServer;
+    WebSocketHandler webSocketHandler;
     WifiMgr wifiMgr;
     bool apMode;
 
     void dimAll(byte value);
 
 public:
-    explicit Looper();
+    explicit Looper(ESP8266WebServer* esp8266WebServer, WebSocketsServer* webSocketsServer);
     ~Looper() = default;
     Looper& operator=(const Looper&) = delete;
 
     void setup();
     void loop();
-    void adjustBrightness(bool up);
 };
 
 #endif

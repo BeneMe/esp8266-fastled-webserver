@@ -21,31 +21,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-//#include "Looper.h" 
-
+#include "Looper.h" 
 #include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+#include <WebSocketsServer.h>
+#include "WebServer.h"
 
 //#define RECV_PIN D4
 //IRrecv irReceiver(RECV_PIN);
 
 //#include "Commands.h"
 
-//Looper* looper;
+
+WebSocketsServer* webSocket = new WebSocketsServer(81);
+ESP8266WebServer* espWebServer = new ESP8266WebServer(80);
+
+
+
+Looper* looper;
 
 void setup(void) {
-  Serial.begin(115200);
+  Serial.begin(76800);
+  SPIFFS.begin();
   delay(100);
   Serial.setDebugOutput(true);
   Serial.print("Starting Setup\n");
   
-  //looper = new Looper();
+  looper = new Looper(espWebServer, webSocket);
   Serial.print("Looper created\n");
-  //looper->setup();
+  looper->setup();
   Serial.print("Setup finished\n");
 }
 
 void loop(void) {
-  //looper->loop();
+  looper->loop(); 
 }
 
 

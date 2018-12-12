@@ -11,7 +11,6 @@ Patterns::Patterns(Settings& settings)
   patterns[0] = { pride,                  "Pride" };
   patterns[1] = { colorWaves,             "Color Waves" };
   */
-  //patternsMap["Pride"] =  std::bind(&Patterns::pride, this);
   patternsVector.push_back({std::bind(&Patterns::pride, this), "Pride"});
   patternsVector.push_back({std::bind(&Patterns::canvas, this), "Canvas"});
   patternsVector.push_back({std::bind(&Patterns::colorWaves, this), "Color Waves"});

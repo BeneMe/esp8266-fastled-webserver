@@ -2,13 +2,15 @@
 
 #include "Looper.h"
 #include "GradientPalettes.h"
+#include "WebSocketsServer.h"
 
-Looper::Looper()
+Looper::Looper(ESP8266WebServer* esp8266WebServer, WebSocketsServer* webSocketsServer)
   : settings(),
     patterns(settings),
     fields(settings, patterns),
-    webServer(fields, settings, patterns),
-    wifiMgr(settings, webServer),
+    webServer(esp8266WebServer, settings, patterns, fields, webSocketsServer),
+    webSocketHandler(webSocketsServer, settings),
+    wifiMgr(settings),
     apMode(false)
  {
     gTargetPalette = gGradientPalettes[0];
@@ -54,7 +56,6 @@ void Looper::setup() {
   Serial.print( F("Vcc: ") ); Serial.println(ESP.getVcc());
   Serial.println();
 
-  SPIFFS.begin();
   {
     Dir dir = SPIFFS.openDir("/");
     while (dir.next()) {
@@ -70,6 +71,7 @@ void Looper::setup() {
 
 
   webServer.webServerSetup();
+  webSocketHandler.setup();
 
   settings.autoPlayTimeout = millis() + (settings.autoplayDuration * 1000);
 }
@@ -85,9 +87,8 @@ void Looper::loop() {
   }
 
 //  dnsServer.processNextRequest();
-  webServer.webSocketsServer.loop();
-  webServer.handleClient();
-
+  webServer.loop();
+  webSocketHandler.loop();
 //  handleIrInput();
 
   if (settings.power == 0) {
@@ -119,29 +120,14 @@ void Looper::loop() {
   }
 
   // Call the current pattern function once, updating the 'leds' array
-  patterns.patternsVector[settings.currentPatternIndex].pattern();
+  if(settings.currentPatternIndex < patterns.patternsVector.size()) {
+    patterns.patternsVector[settings.currentPatternIndex].pattern();
+  }
 
   FastLED.show();
 
   // insert a delay to keep the framerate modest
   //FastLED.delay(1000 / FRAMES_PER_SECOND);
+  
   }
-}
-
-
-void Looper::adjustBrightness(bool up)
-{
-  if (up && brightnessIndex < brightnessCount - 1)
-    brightnessIndex++;
-  else if (!up && brightnessIndex > 0)
-    brightnessIndex--;
-
-  settings.brightness = brightnessMap[brightnessIndex];
-
-  FastLED.setBrightness(settings.brightness);
-
-  EEPROM.write(0, settings.brightness);
-  EEPROM.commit();
-
-  webServer.broadcastInt("brightness", settings.brightness);
 }

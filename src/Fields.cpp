@@ -129,7 +129,6 @@ const String Fields::getFieldsJson() {
 
     Field field = fieldNode.second;
     if (!isFirstField) {
-      isFirstField = false;
       json += ",";
     }
     json += "{\"name\":\"" + field.name + "\",\"label\":\"" + field.label + "\",\"type\":\"" + field.type + "\"";
@@ -155,6 +154,7 @@ const String Fields::getFieldsJson() {
     }
 
     json += "}";
+    isFirstField = false;
     
   }
 

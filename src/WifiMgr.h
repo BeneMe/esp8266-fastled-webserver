@@ -22,7 +22,7 @@
 
 class WifiMgr {
     public:
-        explicit WifiMgr(Settings& settings, WebServer& webServer);
+        explicit WifiMgr(Settings& settings);
         ~WifiMgr() = default;
         WifiMgr& operator=(const WifiMgr&) = delete;
 
@@ -30,8 +30,8 @@ class WifiMgr {
         const char WiFiAPPSK[] = {};
 
         // Wi-Fi network to connect to (if not in AP mode)
-        char* ssid = (char *) "";
-        char* password = (char *) "";
+        char* ssid = (char *) WIFI_SSID;
+        char* password = (char *) WIFI_PASSWORD;
 
         unsigned long futureTimeout = 0;
         uint16_t connectionTimeout = 20000;
@@ -44,7 +44,6 @@ class WifiMgr {
         void initializeWiFi();
     private:
         Settings& settings;
-        WebServer& webServer;
 };
 
 #endif

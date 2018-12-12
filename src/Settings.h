@@ -47,5 +47,9 @@ public:
   uint8_t twinkleDensity = 5;
   CRGB gBackgroundColor = CRGB::Black;
   CRGBPalette16 twinkleFoxPalette;
+
+  uint8_t brightnessCount = 5;
+  uint8_t brightnessMap[5] = { 16, 32, 64, 128, 255 };
+  uint8_t brightnessIndex = 0;
 };
 #endif

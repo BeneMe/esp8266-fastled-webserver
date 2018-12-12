@@ -85,7 +85,7 @@ class TwinkleFox {
 
 
 
-Settings settings;
+Settings& settings;
 
 public:
 TwinkleFox(Settings &settings);

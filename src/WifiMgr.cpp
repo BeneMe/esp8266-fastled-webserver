@@ -3,8 +3,8 @@
 extern ESP8266WebServer espWebServer;
 
 
-WifiMgr::WifiMgr(Settings &settings, WebServer& webServer)
-: settings(settings), webServer(webServer) {
+WifiMgr::WifiMgr(Settings &settings)
+: settings(settings) {
 
 }
 
